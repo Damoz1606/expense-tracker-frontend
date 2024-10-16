@@ -16,10 +16,8 @@ export interface User {
 }
 
 export const userCreate = async (data: UserCreate): Promise<void> => {
-    const session = await auth();
     await expenseTracker()
         .addBody(data)
-        .addToken(session.token)
         .execute('userCreate');
 }
 

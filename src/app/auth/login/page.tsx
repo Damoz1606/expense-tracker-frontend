@@ -11,10 +11,13 @@ import { Input } from '@/components/ui/input'
 import { Loader2 } from 'lucide-react'
 import LoginSchema from './_schema/login.schema'
 import { toast } from '@/hooks/use-toast'
+import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 
 const LoginPage = () => {
 
-    const [loading, setLoading] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false);
+    const router = useRouter();
 
     const form = useForm<z.infer<typeof LoginSchema>>({
         resolver: zodResolver(LoginSchema),
@@ -25,14 +28,23 @@ const LoginPage = () => {
     })
 
     const handleSubmit = async (data: { email: string; password: string; }) => {
-        toast({
-            title: "You submitted the following values:",
-            description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-                </pre>
-            ),
-        })
+        setLoading(true);
+        try {
+            const res = await signIn('credentials', { redirect: false, ...data });
+            if (res?.error) {
+                throw new Error(res.error);
+            }
+            router.push('/app');
+        } catch (error: any) {
+            console.error(error);
+            toast({
+                title: "Ups! Something went wrong",
+                description: 'Check your credentials, maybe something is wrong.',
+                variant: 'destructive'
+            });
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (

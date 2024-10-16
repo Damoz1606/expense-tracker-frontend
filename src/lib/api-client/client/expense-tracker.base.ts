@@ -8,8 +8,13 @@ class TrackerClient extends ApiClientBase<ExpenseTrackerMethod> {
         super(endpoints, baseUrl);
     }
 
+    public execute(key: keyof ExpenseTrackerMethod): Promise<any> {
+        this.addHeader({ 'content-type': 'application/json' });
+        return super.execute(key);
+    }
+
     public addToken(token: string): this {
-        this.addHeader({"authorization": `Bearer ${token}`});
+        this.addHeader({ "authorization": `Bearer ${token}` });
         return this;
     }
 }
