@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { BudgetActivity } from '@/server/budget.actions'
 import Link from 'next/link'
 import { Progress } from './ui/progress'
+import clsx from 'clsx'
 
 type BudgetCardProps = BudgetActivity & {
     notLink?: boolean;
@@ -15,7 +16,7 @@ const BudgetCard: React.FC<BudgetCardProps> = ({
     spend
 }) => {
 
-    const budgetPercentage = spend / budget * 100;
+    const budgetPercentage = spend > budget ? 100 : spend / budget * 100;
 
     const content = <Card className='pb-4 h-fit'>
         <CardHeader className="pb-4">
@@ -31,11 +32,17 @@ const BudgetCard: React.FC<BudgetCardProps> = ({
         </CardHeader>
         <CardContent>
             <div className='w-full'>
-                <div className="flex flex-row justify-between mb-1">
-                    <span className='text-xs text-muted-foreground'>${spend} Spend</span>
-                    <span className='text-xs text-muted-foreground'>${budget - spend} Remaining</span>
+                <div className={clsx("flex flex-row justify-between mb-1 text-xs", {
+                    "text-muted-foreground": spend <= budget,
+                    "text-red-500": spend > budget,
+                    "font-bold": spend > budget,
+                })}>
+                    <span>${spend} Spend</span>
+                    <span>${budget - spend} Remaining</span>
                 </div>
-                <Progress value={budgetPercentage} aria-label={`${budgetPercentage}% ${name}`} />
+                <Progress
+                    value={budgetPercentage}
+                    aria-label={`${budgetPercentage}% ${name}`} />
             </div>
         </CardContent>
     </Card>;

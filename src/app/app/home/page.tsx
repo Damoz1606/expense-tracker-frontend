@@ -14,7 +14,7 @@ const budgetActivity = [
     { id: 2, name: "Home Decor", spend: 3000, budget: 3500 },
     { id: 3, name: "Garden", spend: 200, budget: 2400 },
     { id: 4, name: "Car", spend: 2500, budget: 5200 },
-    { id: 5, name: "Youtube", spend: 3350, budget: 8000 },
+    { id: 5, name: "Youtube", spend: 9000, budget: 8000 },
 ]
 
 const latestExpenses: Expense[] = [
