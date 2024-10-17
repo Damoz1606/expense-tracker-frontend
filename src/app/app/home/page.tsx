@@ -1,37 +1,37 @@
-'use client'
-
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Progress } from '@/components/ui/progress'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { PiggyBank, NotepadText, Wallet, ListFilter } from 'lucide-react'
+import { PiggyBank, NotepadText, Wallet, ListFilter, Search } from 'lucide-react'
 import React from 'react'
-import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
+import BudgetChart from './_components/chart'
+import BudgetCard from '@/components/budget-card'
+import { Input } from '@/components/ui/input'
+import { Expense } from '@/server/expense.actions'
+import ExpenseTable from '@/components/expense-table'
 
-const chartConfig = {
-    desktop: {
-        label: "Desktop",
-        color: "hsl(var(--chart-1))",
-    },
-    mobile: {
-        label: "Mobile",
-        color: "hsl(var(--chart-2))",
-    },
-} satisfies ChartConfig
+const budgetActivity = [
+    { id: 1, name: "Shopping", spend: 2230, budget: 3450 },
+    { id: 2, name: "Home Decor", spend: 3000, budget: 3500 },
+    { id: 3, name: "Garden", spend: 200, budget: 2400 },
+    { id: 4, name: "Car", spend: 2500, budget: 5200 },
+    { id: 5, name: "Youtube", spend: 3350, budget: 8000 },
+]
 
-const chartData = [
-    { month: "January", desktop: 186, mobile: 80 },
-    { month: "February", desktop: 305, mobile: 200 },
-    { month: "March", desktop: 237, mobile: 120 },
-    { month: "April", desktop: 73, mobile: 190 },
-    { month: "May", desktop: 209, mobile: 130 },
-    { month: "June", desktop: 214, mobile: 140 },
+const latestExpenses: Expense[] = [
+    { id: 1, name: 'Nike Shoes', budget: 'Shopping', amount: 120, createAt: new Date('2024-04-20') },
+    { id: 2, name: 'Shirts Adidas', budget: 'Shopping', amount: 150, createAt: new Date('2024-04-20') },
+    { id: 3, name: 'Leaving Room', budget: 'Home Decor', amount: 800, createAt: new Date('2024-04-20') },
+    { id: 4, name: 'Bath', budget: 'Home Decor', amount: 1000, createAt: new Date('2024-04-20') },
+    { id: 4, name: 'Source Code', budget: 'Youtube', amount: 800, createAt: new Date('2024-04-20') },
+    { id: 4, name: 'Youtube Ads', budget: 'Youtube', amount: 300, createAt: new Date('2024-04-20') },
+    { id: 4, name: 'Oil Change', budget: 'Car', amount: 120, createAt: new Date('2024-04-20') },
 ]
 
 const HomePage = () => {
+
+    const totalBudget = budgetActivity.reduce((prev, curr) => prev + curr.budget, 0);
+    const totalSpend = budgetActivity.reduce((prev, curr) => prev + curr.spend, 0);
+
     return (
         <div className='grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3'>
             <div className='col-span-3'>
@@ -50,7 +50,7 @@ const HomePage = () => {
                                 </CardHeader>
                                 <CardContent>
                                     <span className="text-2xl font-bold">
-                                        $15300
+                                        ${totalBudget}
                                     </span>
                                 </CardContent>
                             </div>
@@ -67,7 +67,7 @@ const HomePage = () => {
                                 </CardHeader>
                                 <CardContent>
                                     <span className="text-2xl font-bold">
-                                        $4950
+                                        ${totalSpend}
                                     </span>
                                 </CardContent>
                             </div>
@@ -84,7 +84,7 @@ const HomePage = () => {
                                 </CardHeader>
                                 <CardContent>
                                     <span className="text-2xl font-bold">
-                                        5
+                                        {budgetActivity.length}
                                     </span>
                                 </CardContent>
                             </div>
@@ -101,50 +101,29 @@ const HomePage = () => {
                         <CardTitle>Activity</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <ChartContainer config={chartConfig}>
-                            <BarChart accessibilityLayer data={chartData}>
-                                <CartesianGrid vertical={false} />
-                                <XAxis
-                                    dataKey="month"
-                                    tickLine={false}
-                                    tickMargin={10}
-                                    axisLine={false}
-                                    tickFormatter={(value) => value.slice(0, 3)}
-                                />
-                                <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-                                <ChartLegend content={<ChartLegendContent />} />
-                                <Bar
-                                    dataKey="desktop"
-                                    stackId="a"
-                                    fill="var(--color-desktop)"
-                                    radius={[0, 0, 4, 4]}
-                                />
-                                <Bar
-                                    dataKey="mobile"
-                                    stackId="a"
-                                    fill="var(--color-mobile)"
-                                    radius={[4, 4, 0, 0]}
-                                />
-                            </BarChart>
-                        </ChartContainer>
+                        <BudgetChart data={budgetActivity.map(e => ({
+                            budget: e.name,
+                            remaining: e.budget - e.spend,
+                            spend: e.spend
+                        }))} />
                     </CardContent>
                 </Card>
                 <div className='flex flex-col gap-y-2'>
-                    <div className="flex item-center">
-                        <Card>
-                            <CardContent className="p-2 flex items-center gap-1 h-full">
-                                <Button variant='ghost' className='bg-muted'>Week</Button>
-                                <Button variant='ghost'>Month</Button>
-                                <Button variant='ghost'>Year</Button>
-                            </CardContent>
-                        </Card>
+                    <div className="flex item-center gap-x-1">
+                        <div className="relative flex-1">
+                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                            <Input
+                                type="search"
+                                placeholder="Search..."
+                                className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
+                            />
+                        </div>
                         <div className="ml-auto flex items-center gap-2">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button
-                                        variant="outline"
                                         size="sm"
-                                        className="h-7 gap-1 text-sm"
+                                        className="h-full gap-1 text-sm"
                                     >
                                         <ListFilter className="h-3.5 w-3.5" />
                                         <span className="sr-only sm:not-sr-only">Filter</span>
@@ -174,185 +153,10 @@ const HomePage = () => {
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Customer</TableHead>
-                                        <TableHead className="hidden sm:table-cell">
-                                            Type
-                                        </TableHead>
-                                        <TableHead className="hidden sm:table-cell">
-                                            Status
-                                        </TableHead>
-                                        <TableHead className="hidden md:table-cell">
-                                            Date
-                                        </TableHead>
-                                        <TableHead className="text-right">Amount</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    <TableRow className="bg-accent">
-                                        <TableCell>
-                                            <div className="font-medium">Liam Johnson</div>
-                                            <div className="hidden text-sm text-muted-foreground md:inline">
-                                                liam@example.com
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="hidden sm:table-cell">
-                                            Sale
-                                        </TableCell>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <Badge className="text-xs" variant="secondary">
-                                                Fulfilled
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell">
-                                            2023-06-23
-                                        </TableCell>
-                                        <TableCell className="text-right">$250.00</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>
-                                            <div className="font-medium">Olivia Smith</div>
-                                            <div className="hidden text-sm text-muted-foreground md:inline">
-                                                olivia@example.com
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="hidden sm:table-cell">
-                                            Refund
-                                        </TableCell>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <Badge className="text-xs" variant="outline">
-                                                Declined
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell">
-                                            2023-06-24
-                                        </TableCell>
-                                        <TableCell className="text-right">$150.00</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>
-                                            <div className="font-medium">Noah Williams</div>
-                                            <div className="hidden text-sm text-muted-foreground md:inline">
-                                                noah@example.com
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="hidden sm:table-cell">
-                                            Subscription
-                                        </TableCell>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <Badge className="text-xs" variant="secondary">
-                                                Fulfilled
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell">
-                                            2023-06-25
-                                        </TableCell>
-                                        <TableCell className="text-right">$350.00</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>
-                                            <div className="font-medium">Emma Brown</div>
-                                            <div className="hidden text-sm text-muted-foreground md:inline">
-                                                emma@example.com
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="hidden sm:table-cell">
-                                            Sale
-                                        </TableCell>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <Badge className="text-xs" variant="secondary">
-                                                Fulfilled
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell">
-                                            2023-06-26
-                                        </TableCell>
-                                        <TableCell className="text-right">$450.00</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>
-                                            <div className="font-medium">Liam Johnson</div>
-                                            <div className="hidden text-sm text-muted-foreground md:inline">
-                                                liam@example.com
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="hidden sm:table-cell">
-                                            Sale
-                                        </TableCell>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <Badge className="text-xs" variant="secondary">
-                                                Fulfilled
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell">
-                                            2023-06-23
-                                        </TableCell>
-                                        <TableCell className="text-right">$250.00</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>
-                                            <div className="font-medium">Liam Johnson</div>
-                                            <div className="hidden text-sm text-muted-foreground md:inline">
-                                                liam@example.com
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="hidden sm:table-cell">
-                                            Sale
-                                        </TableCell>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <Badge className="text-xs" variant="secondary">
-                                                Fulfilled
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell">
-                                            2023-06-23
-                                        </TableCell>
-                                        <TableCell className="text-right">$250.00</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>
-                                            <div className="font-medium">Olivia Smith</div>
-                                            <div className="hidden text-sm text-muted-foreground md:inline">
-                                                olivia@example.com
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="hidden sm:table-cell">
-                                            Refund
-                                        </TableCell>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <Badge className="text-xs" variant="outline">
-                                                Declined
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell">
-                                            2023-06-24
-                                        </TableCell>
-                                        <TableCell className="text-right">$150.00</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>
-                                            <div className="font-medium">Emma Brown</div>
-                                            <div className="hidden text-sm text-muted-foreground md:inline">
-                                                emma@example.com
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="hidden sm:table-cell">
-                                            Sale
-                                        </TableCell>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <Badge className="text-xs" variant="secondary">
-                                                Fulfilled
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell">
-                                            2023-06-26
-                                        </TableCell>
-                                        <TableCell className="text-right">$450.00</TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
+                            <ExpenseTable
+                                data={latestExpenses}
+                                showDate
+                                showBudget />
                         </CardContent>
                     </Card>
                 </div>
@@ -361,50 +165,7 @@ const HomePage = () => {
                 <div className="flex flex-col items-start gap-4 w-full">
                     <span className='font-bold'>Latest Budgets</span>
                     <div className="flex flex-col gap-y-2 w-full">
-                        <Card>
-                            <CardHeader className="pb-2">
-                                <div className="flex flex-row justify-between items-center">
-                                    <div>
-                                        <CardTitle className="text-xl">Shopping</CardTitle>
-                                        <CardDescription>2 Item</CardDescription>
-                                    </div>
-                                    <span className='text-xl font-bold'>
-                                        $2500
-                                    </span>
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <div className='w-full'>
-                                    <div className="flex flex-row justify-between mb-1">
-                                        <span className='text-xs text-muted-foreground'>$270 Spend</span>
-                                        <span className='text-xs text-muted-foreground'>$2230 Remaining</span>
-                                    </div>
-                                    <Progress value={25} aria-label="25% increase" />
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader className="pb-2">
-                                <div className="flex flex-row justify-between items-center">
-                                    <div>
-                                        <CardTitle className="text-xl">Home Decor</CardTitle>
-                                        <CardDescription>2 Item</CardDescription>
-                                    </div>
-                                    <span className='text-xl font-bold'>
-                                        $3800
-                                    </span>
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <div className='w-full'>
-                                    <div className="flex flex-row justify-between mb-1">
-                                        <span className='text-xs text-muted-foreground'>$330 Spend</span>
-                                        <span className='text-xs text-muted-foreground'>$500 Remaining</span>
-                                    </div>
-                                    <Progress value={25} aria-label="25% increase" />
-                                </div>
-                            </CardContent>
-                        </Card>
+                        {budgetActivity.map(e => <BudgetCard key={Math.random()} {...e} />)}
                     </div>
                 </div>
             </div>
