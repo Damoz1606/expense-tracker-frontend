@@ -13,6 +13,7 @@ const BudgetCard: React.FC<BudgetCardProps> = ({
     notLink,
     budget,
     name,
+    items,
     spend
 }) => {
 
@@ -23,7 +24,7 @@ const BudgetCard: React.FC<BudgetCardProps> = ({
             <div className="flex flex-row justify-between items-center">
                 <div>
                     <CardTitle className="text-xl">{name}</CardTitle>
-                    <CardDescription>2 Item</CardDescription>
+                    <CardDescription>{items} Item</CardDescription>
                 </div>
                 <span className='text-xl font-bold'>
                     ${budget}

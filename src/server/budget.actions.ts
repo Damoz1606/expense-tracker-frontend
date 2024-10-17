@@ -7,6 +7,7 @@ import { ArrayResponse } from "@/lib/interfaces";
 export interface BudgetActivity {
     id: number,
     name: string,
+    items: number;
     budget: number,
     spend: number
 }
