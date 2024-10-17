@@ -5,11 +5,11 @@ import Link from 'next/link'
 import React from 'react'
 
 const budgetActivity = [
-  { id: 1, name: "Shopping", spend: 2230, budget: 3450 },
-  { id: 2, name: "Home Decor", spend: 3000, budget: 3500 },
-  { id: 3, name: "Garden", spend: 200, budget: 2400 },
-  { id: 4, name: "Car", spend: 2500, budget: 5200 },
-  { id: 5, name: "Youtube", spend: 3350, budget: 8000 },
+  { id: 1, items: 1, name: "Shopping", spend: 2230, budget: 3450 },
+  { id: 2, items: 2, name: "Home Decor", spend: 3000, budget: 3500 },
+  { id: 3, items: 3, name: "Garden", spend: 200, budget: 2400 },
+  { id: 4, items: 4, name: "Car", spend: 2500, budget: 5200 },
+  { id: 5, items: 5, name: "Youtube", spend: 3350, budget: 8000 },
 ]
 
 
