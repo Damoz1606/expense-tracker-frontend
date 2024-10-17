@@ -23,7 +23,7 @@ export interface BudgetWithExpenses extends Budget {
         name: string,
         amount: number,
         createAt: Date
-    }
+    }[]
 }
 
 export interface BudgetRequest {
