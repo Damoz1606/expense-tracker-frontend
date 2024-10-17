@@ -3,6 +3,7 @@
 import expenseTracker from "@/lib/api-client/client/expense-tracker";
 import auth from "@/lib/auth/auth";
 import { ArrayResponse } from "@/lib/interfaces";
+import { revalidatePath } from "next/cache";
 
 export interface BudgetActivity {
     id: number,
@@ -40,12 +41,15 @@ export const budgetRetriveActivity = async (): Promise<BudgetActivity[]> => {
     return data;
 }
 
-export const budgetCreate = async (data: BudgetRequest): Promise<void> => {
+export const budgetCreate = async (data: BudgetRequest): Promise<Budget> => {
     const session = await auth();
-    await expenseTracker()
+    const budget: Budget = await expenseTracker()
         .addToken(session.token)
         .addBody(data)
         .execute('budgetCreate');
+    revalidatePath('/app/budgets');
+    revalidatePath('/app/home');
+    return budget;
 }
 
 export const budgetRetriveArray = async (): Promise<Budget[]> => {
@@ -56,10 +60,11 @@ export const budgetRetriveArray = async (): Promise<Budget[]> => {
     return data;
 }
 
-export const budgetRetrive = async (): Promise<BudgetWithExpenses> => {
+export const budgetRetrive = async (id: number): Promise<BudgetWithExpenses> => {
     const session = await auth();
     const data: BudgetWithExpenses = await expenseTracker()
         .addToken(session.token)
+        .addParams({ id })
         .execute('budgetRetrive');
     return data;
 }
@@ -71,6 +76,8 @@ export const budgetUpdate = async (id: number, body: BudgetRequest): Promise<voi
         .addParams({ id })
         .addBody(body)
         .execute('budgetUpdate');
+    revalidatePath('/app/budgets');
+    revalidatePath('/app/home');
 }
 
 export const budgetDelete = async (id: number) => {

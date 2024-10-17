@@ -1,11 +1,9 @@
 import React from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table'
 import { Badge } from './ui/badge'
-import { TooltipProvider, TooltipTrigger, TooltipContent, Tooltip } from '@radix-ui/react-tooltip'
-import { Trash } from 'lucide-react'
-import { Button } from './ui/button'
 import { Expense } from '@/server/expense.actions'
 import dayjs from 'dayjs'
+import ExpenseDelete from './expense-delete'
 
 interface ExpenseTableProps {
     data: Expense[];
@@ -64,20 +62,7 @@ const ExpenseTable: React.FC<ExpenseTableProps> = ({
                             </TableCell>
                             {
                                 showAction && <TableCell className='flex justify-end'>
-                                    <TooltipProvider>
-                                        <Tooltip>
-                                            <TooltipTrigger asChild>
-                                                <Button
-                                                    size='icon'
-                                                    variant='destructive'>
-                                                    <Trash className='h-5 w-5' />
-                                                </Button>
-                                            </TooltipTrigger>
-                                            <TooltipContent side="right" sideOffset={5}>
-                                                Eliminar
-                                            </TooltipContent>
-                                        </Tooltip>
-                                    </TooltipProvider>
+                                    <ExpenseDelete {...e} />
                                 </TableCell>
                             }
                         </TableRow>

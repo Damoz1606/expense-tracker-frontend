@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Loader2 } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
+import { expenseCreate } from '@/server/expense.actions';
 
 interface ExpenseFormProps {
     budget: number;
@@ -24,22 +26,29 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
         resolver: zodResolver(ExpenseSchema),
         defaultValues: {
             amount: 0,
-            budget: budget,
             name: ""
         },
         values: {
-            budget,
             amount: 0,
             name: ""
         }
     });
 
-    const handleSubmit = async (data: { name: string; amount: number; budget: number; }) => {
-        form.reset({
-            amount: 0,
-            name: "",
-            budget: budget
-        })
+    const handleSubmit = async (data: { name: string; amount: number; }) => {
+        setLoading(true);
+        try {
+            await expenseCreate({ ...data, budget });
+            form.reset({ amount: 0, name: "" });
+        } catch (error) {
+            console.error(error);
+            toast({
+                title: "Ups! Something went wrong",
+                description: 'Check your data, maybe something is wrong.',
+                variant: 'destructive'
+            });
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -72,18 +81,6 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
                                     <FormLabel>Expense amount</FormLabel>
                                     <FormControl>
                                         <Input type="number" step={0.01} placeholder="eg. 1000" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="budget"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormControl>
-                                        <Input type="hidden" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

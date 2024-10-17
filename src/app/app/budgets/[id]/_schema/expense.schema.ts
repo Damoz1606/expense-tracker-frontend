@@ -8,6 +8,5 @@ export default z.object({
         return !n.toString().split('.')[1] || n.toString().split('.')[1].length <= 2;
     }, {
         message: 'Max precision is 2 decimal places'
-    }),
-    budget: z.coerce.number()
+    })
 });

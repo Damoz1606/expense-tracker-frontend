@@ -6,28 +6,18 @@ import React from 'react'
 import BudgetChart from './_components/chart'
 import BudgetCard from '@/components/budget-card'
 import { Input } from '@/components/ui/input'
-import { Expense } from '@/server/expense.actions'
+import { Expense, expenseLastest } from '@/server/expense.actions'
 import ExpenseTable from '@/components/expense-table'
+import { retriveMe } from '@/server/user.actions'
+import { budgetRetriveActivity } from '@/server/budget.actions'
 
-const budgetActivity = [
-    { id: 1, items: 1, name: "Shopping", spend: 2230, budget: 3450 },
-    { id: 2, items: 2, name: "Home Decor", spend: 3000, budget: 3500 },
-    { id: 3, items: 3, name: "Garden", spend: 200, budget: 2400 },
-    { id: 4, items: 4, name: "Car", spend: 2500, budget: 5200 },
-    { id: 5, items: 5, name: "Youtube", spend: 9000, budget: 8000 },
-]
+const HomePage = async () => {
 
-const latestExpenses: Expense[] = [
-    { id: 1, name: 'Nike Shoes', budget: 'Shopping', amount: 120, createAt: new Date('2024-04-20') },
-    { id: 2, name: 'Shirts Adidas', budget: 'Shopping', amount: 150, createAt: new Date('2024-04-20') },
-    { id: 3, name: 'Leaving Room', budget: 'Home Decor', amount: 800, createAt: new Date('2024-04-20') },
-    { id: 4, name: 'Bath', budget: 'Home Decor', amount: 1000, createAt: new Date('2024-04-20') },
-    { id: 4, name: 'Source Code', budget: 'Youtube', amount: 800, createAt: new Date('2024-04-20') },
-    { id: 4, name: 'Youtube Ads', budget: 'Youtube', amount: 300, createAt: new Date('2024-04-20') },
-    { id: 4, name: 'Oil Change', budget: 'Car', amount: 120, createAt: new Date('2024-04-20') },
-]
+    const user = await retriveMe();
 
-const HomePage = () => {
+    const budgetActivity = await budgetRetriveActivity();
+
+    const latestExpenses = await expenseLastest();
 
     const totalBudget = budgetActivity.reduce((prev, curr) => prev + curr.budget, 0);
     const totalSpend = budgetActivity.reduce((prev, curr) => prev + curr.spend, 0);
@@ -36,7 +26,7 @@ const HomePage = () => {
         <div className='grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3'>
             <div className='col-span-3'>
                 <div className='flex flex-col gap-y-1 md:gap-y-4'>
-                    <p className='text-3xl font-bold lg:text-[40px] xl:text-[50px]'>Hi! Username</p>
+                    <p className='text-3xl font-bold lg:text-[40px] xl:text-[50px]'>Hi! {user.username}</p>
                     <p className='text-xs md:text-sm font-light'>Here&apos;s what happening with your money. Let&apos;s Manage your expense</p>
                 </div>
             </div>
@@ -163,9 +153,9 @@ const HomePage = () => {
             </div>
             <div className='col-span-3 md:col-span-1'>
                 <div className="flex flex-col items-start gap-4 w-full">
-                    <span className='font-bold'>Latest Budgets</span>
+                    <span className='font-bold'>Top 5 budget expenses</span>
                     <div className="flex flex-col gap-y-2 w-full">
-                        {budgetActivity.map(e => <BudgetCard key={Math.random()} {...e} />)}
+                        {budgetActivity.sort((a, b) => a.spend - b.spend).map(e => <BudgetCard key={e.id} {...e} />).slice(5)}
                     </div>
                 </div>
             </div>

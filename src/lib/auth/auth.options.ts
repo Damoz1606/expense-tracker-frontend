@@ -14,7 +14,7 @@ const options: AuthOptions = {
         jwt: async ({ token, user }: any) => {
             if (user) {
                 try {
-                    return { ...user, token }
+                    return { token, ...user }
                 } catch (error) {
                     console.error(error);
                     throw error;

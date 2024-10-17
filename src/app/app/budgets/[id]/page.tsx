@@ -1,38 +1,30 @@
 import BackButton from '@/components/back-button'
 import BudgetCard from '@/components/budget-card'
-import { BudgetActivity, BudgetWithExpenses } from '@/server/budget.actions'
+import { BudgetActivity, budgetRetrive } from '@/server/budget.actions'
 import React from 'react'
 import ExpenseForm from './_components/expense-form'
 import ExpenseTable from '@/components/expense-table'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Pagination, PaginationContent, PaginationItem } from '@/components/ui/pagination'
-import { ChevronLeft, ChevronRight, Edit, ListFilter, Search, Trash } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Edit, ListFilter, Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import Link from 'next/link'
-
-const budget: BudgetWithExpenses = {
-  expenses: [{
-    id: 1,
-    name: 'Nike shoes',
-    amount: 120,
-    createAt: new Date('2024-04-20')
-  }],
-  id: 1,
-  name: 'Shopping',
-  budget: 2500
-}
+import BudgetDelete from './_components/budget-delete'
 
 interface BudgetPageProps {
   params: { id: number }
 }
-const BudgetPage: React.FC<BudgetPageProps> = ({
+const BudgetPage: React.FC<BudgetPageProps> = async ({
   params
 }) => {
 
+  const budget = await budgetRetrive(params.id);
+
   const budgetActivity: BudgetActivity = {
     ...budget,
+    items: budget.expenses.length,
     spend: budget.expenses.reduce((prev, curr) => prev + curr.amount, 0)
   }
 
@@ -49,11 +41,7 @@ const BudgetPage: React.FC<BudgetPageProps> = ({
             className={buttonVariants({ variant: 'ghost', size: 'icon' })}>
             <Edit className='w-5 h-5' />
           </Link>
-          <Button
-            variant='destructive'
-            size='icon'>
-            <Trash className='w-5 h-5' />
-          </Button>
+          <BudgetDelete id={params.id} />
         </div>
       </div>
       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>

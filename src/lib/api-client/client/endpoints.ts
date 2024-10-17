@@ -44,11 +44,11 @@ const endpoints = {
     } as ApiResource,
     expenseRetrive: {
         method: 'get',
-        resource: 'expenses/:budget'
+        resource: 'expenses'
     } as ApiResource,
     expenseLastest: {
         method: 'get',
-        resource: 'expenses/latest'
+        resource: 'expenses/top/latest'
     } as ApiResource,
     expenseDelete: {
         method: 'delete',

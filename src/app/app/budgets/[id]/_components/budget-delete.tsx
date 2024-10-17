@@ -1,26 +1,26 @@
 'use client'
 
-import BudgetForm from '@/components/budget-form'
+import { Button } from '@/components/ui/button'
 import { toast } from '@/hooks/use-toast'
-import { BudgetRequest, budgetUpdate } from '@/server/budget.actions'
+import { budgetDelete } from '@/server/budget.actions'
+import { Loader2, Trash } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React, { useCallback, useState } from 'react'
 
-interface BudgetUpdateProps extends BudgetRequest {
-    id: number;
+interface BudgetDeleteProps {
+    id: number
 }
-const BudgetUpdate: React.FC<BudgetUpdateProps> = ({
-    id,
-    ...budget
+const BudgetDelete: React.FC<BudgetDeleteProps> = ({
+    id
 }) => {
 
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
-    const handleUpdate = useCallback(async (data: BudgetRequest) => {
+    const handleClick = useCallback(async () => {
         setLoading(true);
         try {
-            await budgetUpdate(id, data)
+            await budgetDelete(id);
             router.back();
         } catch (error) {
             console.error(error);
@@ -35,13 +35,15 @@ const BudgetUpdate: React.FC<BudgetUpdateProps> = ({
     }, [id, router]);
 
     return (
-        <BudgetForm
-            title='Modify budget'
-            label='Save budget'
-            onSubmit={handleUpdate}
-            loading={loading}
-            {...budget} />
+        <Button
+            variant='destructive'
+            size='icon'
+            onClick={handleClick}>
+            {loading
+                ? <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                : <Trash className='w-5 h-5' />}
+        </Button>
     )
 }
 
-export default BudgetUpdate
+export default BudgetDelete
