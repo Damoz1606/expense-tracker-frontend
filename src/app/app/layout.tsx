@@ -53,7 +53,7 @@ const AppLayout: React.FC<{
                         </ShellAccount>
                     </ShellNavBottom>
                 </ShellNavbar>
-                <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
+                <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14 h-screen">
                     <ShellHeader>
                         <ShellMobileNavSheet>
                             <div className="ml-6 mb-4 group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base">
