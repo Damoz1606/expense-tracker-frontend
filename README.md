@@ -2,17 +2,17 @@
 
 This is a [Next.js](https://nextjs.org) project.
 
-## Local Intallation
+## Local Installation
 
 #### System requirements
 
-| Tecnology | Version  |
-| --------- | -------- |
-| Node      | ^18.17.1 |
+| Technology | Version  |
+| ---------- | -------- |
+| Node       | ^18.17.1 |
 
 #### Enviroment
 
-This project uses a .env file, so create a `.env.local` in the root of the project and add the following structure:
+This project uses a .env file, so create a `.env.local` file in the root of the project and add the following structure:
 
 ```bash
 NEXT_URI=uri_to_backend # eg. https://backend.com
@@ -61,7 +61,7 @@ Open [https://expense-tracker-frontend-six-red.vercel.app](https://expense-track
 
 ## External Libraries
 
-This system used custom libraries to work, by default used Next.js basic configuration so it used Tailwind
+This system used external libraries to work, by default used Next.js basic configuration so it used Tailwind
 
 ### Shadcn
 
