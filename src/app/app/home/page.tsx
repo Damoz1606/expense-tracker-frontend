@@ -6,7 +6,7 @@ import React from 'react'
 import BudgetChart from './_components/chart'
 import BudgetCard from '@/components/budget-card'
 import { Input } from '@/components/ui/input'
-import { Expense, expenseLastest } from '@/server/expense.actions'
+import { expenseLastest } from '@/server/expense.actions'
 import ExpenseTable from '@/components/expense-table'
 import { retriveMe } from '@/server/user.actions'
 import { budgetRetriveActivity } from '@/server/budget.actions'
@@ -155,7 +155,7 @@ const HomePage = async () => {
                 <div className="flex flex-col items-start gap-4 w-full">
                     <span className='font-bold'>Top 5 budget expenses</span>
                     <div className="flex flex-col gap-y-2 w-full">
-                        {budgetActivity.sort((a, b) => a.spend - b.spend).map(e => <BudgetCard key={e.id} {...e} />).slice(5)}
+                        {budgetActivity.sort((a, b) => b.spend - a.spend).slice(0, 5).map(e => <BudgetCard key={e.id} {...e} />)}
                     </div>
                 </div>
             </div>

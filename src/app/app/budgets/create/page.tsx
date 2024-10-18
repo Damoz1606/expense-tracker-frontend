@@ -5,7 +5,7 @@ import BudgetForm from '../../../../components/budget-form'
 import { budgetCreate, BudgetRequest } from '@/server/budget.actions'
 import { toast } from '@/hooks/use-toast'
 import BackButton from '@/components/back-button'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 
 const BudgetCreatePage = () => {
   const [loading, setLoading] = useState<boolean>(false);

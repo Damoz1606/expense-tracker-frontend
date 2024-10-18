@@ -15,9 +15,13 @@ import { expenseCreate } from '@/server/expense.actions';
 
 interface ExpenseFormProps {
     budget: number;
+    spend: number;
+    remaining: number;
 }
 const ExpenseForm: React.FC<ExpenseFormProps> = ({
-    budget
+    budget,
+    remaining,
+    spend
 }) => {
 
     const [loading, setLoading] = useState<boolean>(false);
@@ -35,6 +39,12 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
     });
 
     const handleSubmit = async (data: { name: string; amount: number; }) => {
+        if (remaining <= spend) {
+            form.setError("amount", {
+                message: "You don't have enough credit."
+            });
+            return;
+        }
         setLoading(true);
         try {
             await expenseCreate({ ...data, budget });

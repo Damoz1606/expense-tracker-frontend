@@ -1,3 +1,5 @@
+'use server'
+
 import expenseTracker from "@/lib/api-client/client/expense-tracker";
 import auth from "@/lib/auth/auth";
 import { ArrayResponse } from "@/lib/interfaces";
@@ -64,6 +66,7 @@ export const expenseDelete = async (id: number): Promise<void> => {
         .addToken(session.token)
         .addParams({ id })
         .execute('expenseDelete');
+    revalidatePath(`/app/home`);
     revalidatePath(`/app/budgets/*`);
     revalidatePath(`/app/expenses`);
 }
