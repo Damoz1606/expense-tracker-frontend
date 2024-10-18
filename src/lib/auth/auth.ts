@@ -1,6 +1,7 @@
 import { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from "next";
-import { getServerSession, Session } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import authOptions from "./auth.options";
+import { Session } from "next-auth";
 
 /**
  * Retrives the current session, if it not exists throws error
