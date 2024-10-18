@@ -26,32 +26,63 @@ abstract class ApiClientBase<T extends { [key: string]: ApiResource }> {
         protected readonly _baseUrl: string
     ) { }
 
+    /**
+     * Adds a element to the request header
+     * @param {Record<string, string>} header - Key-value object to add in the header
+     * @returns {ApiClientBase} This object
+     */
     public addHeader(header: Record<string, string>): this {
         this._header = { ...this._header, ...header };
         return this;
     }
 
+    /**
+     * Adds a body to the request
+     * @template T - Object that inherits from Record<string, any>
+     * @param {T | FormData} body - Data that is request
+     * @returns {ApiClientBase} This object
+     */
     public addBody<T extends Record<string, any>>(body: T | FormData): this {
         this._body = body;
         return this;
     }
 
+    /**
+     * Adds replace the params in the url
+     * @param {Record<string, number>} param - Object required to replace any param in the url
+     * @returns {ApiClientBase} This object
+     */
     public addParams(param: Record<string, string | number>): this {
         this._params = { ...this._params, ...param };
         return this;
     }
 
+    /**
+     * Adds a query param in the url
+     * @param {Record<string, string | number | boolean>} query - Object required to add in the url as a query param
+     * @returns {ApiClientBase} This object
+     */
     public addQuery(query: Record<string, string | number | boolean>): this {
         this._query = { ...this._query, ...query };
         return this;
     }
 
+    /**
+     * Options that will be checked before the request is done
+     * @param {string} value - Options such: --no-body 
+     * @returns {ApiClientBase} This object
+     */
     public addFlag(value: string): this {
         const values = value.split(/\s+/);
         values.forEach((e) => this._flag.add(e));
         return this;
     }
 
+    /**
+     * Executes the fetch
+     * @param {T} key - Key required to address the endpoint
+     * @returns {Promise<any>} Returns an object
+     */
     public async execute(key: keyof T): Promise<any> {
         const endpoint = this.endpoints[key];
         const method: string = endpoint.method.toUpperCase();
@@ -86,6 +117,12 @@ abstract class ApiClientBase<T extends { [key: string]: ApiResource }> {
 
     }
 
+    /**
+     * Creates the request object
+     * @param {string} url - Url for the request
+     * @param {RequestInit} init - Object required to do the fetch
+     * @returns {Request} A request object for the fetch api
+     */
     private _instanceRequest(url: string, init: RequestInit): Request {
         return new Request(url, {
             ...init,
@@ -95,6 +132,9 @@ abstract class ApiClientBase<T extends { [key: string]: ApiResource }> {
         } as RequestInit);
     }
 
+    /**
+     * Reset the object state
+     */
     private _resetState() {
         this._query = {};
         this._params = {};
@@ -103,10 +143,19 @@ abstract class ApiClientBase<T extends { [key: string]: ApiResource }> {
         this._body = undefined;
     }
 
+    /**
+     * Checks if the client is used in the server or client context
+     * @returns {boolean} True if is on server or false if is on client
+     */
     protected _isServerContext(): boolean {
         return typeof window === 'undefined';
     }
 
+    /**
+     * Builds the URL replacing the params or adding the query param
+     * @param {string} endpoints - Enpoint required to join the baseUrl
+     * @returns {string} Processed the url, all the params and query are already applied
+     */
     protected _buildUrl(endpoints: string): string {
         return UrlBuilder
             .builder(`${this._baseUrl}/${endpoints}`)

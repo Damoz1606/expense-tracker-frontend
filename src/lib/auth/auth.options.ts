@@ -1,6 +1,9 @@
 import { AuthOptions } from 'next-auth';
 import CredentialProvider from './credential.provider'
 
+/**
+ * AuthOption that implements the CredentialProvider
+ */
 const options: AuthOptions = {
     providers: [CredentialProvider],
     secret: process.env.NEXT_NEXTAUTH_SECRET,

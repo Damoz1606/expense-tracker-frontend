@@ -2,6 +2,9 @@ import { User } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import authConfig from "../config/auth.config";
 
+/**
+ * Implements the credential provider from NextAuth
+ */
 const provider = Credentials({
     name: 'credentials',
     credentials: {

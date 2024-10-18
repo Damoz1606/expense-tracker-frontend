@@ -13,6 +13,11 @@ class TrackerClient extends ApiClientBase<ExpenseTrackerMethod> {
         return super.execute(key);
     }
 
+    /**
+     * Add an authentication token to the request
+     * @param {string} token - Authorization token
+     * @returns This object
+     */
     public addToken(token: string): this {
         this.addHeader({ "authorization": `Bearer ${token}` });
         return this;

@@ -1,4 +1,9 @@
 class UrlBuilder {
+    /**
+     * Using fluent pattern, creates an UrlBuilder object
+     * @param {string} url - Base url
+     * @returns {UrlBuilder} UrlBuilder object
+     */
     public static builder(url: string): UrlBuilder {
         return new UrlBuilder(url);
     }
@@ -8,16 +13,30 @@ class UrlBuilder {
 
     constructor(private readonly _url: string) { }
 
+    /**
+     * Adds query params to the url
+     * @param params 
+     * @returns {UrlBuilder} UrlBuilder object
+     */
     public query(params: Record<string, string | number | boolean> | undefined): UrlBuilder {
         if (params) this._queryParams = params;
         return this;
     }
 
+    /**
+     * Replace all the values like ':id' with the ones in the given object
+     * @param {Record<string, string | number> | undefined} params - Record required to replace values
+     * @returns {UrlBuilder} UrlBuilder object
+     */
     public param(params: Record<string, string | number> | undefined): UrlBuilder {
         if (params) this._urlParams = params;
         return this;
     }
 
+    /**
+     * Apply all the options given in the builder process
+     * @returns {string} Url string
+     */
     public build(): string {
         let url: string = this._url;
 
@@ -48,6 +67,11 @@ class UrlBuilder {
         return url;
     }
 
+    /**
+     * Retrives all the segments in the url that includes ':'
+     * @param {string} url - Required url to be checked
+     * @returns {Array<string>} Array of string
+     */
     private extractSegments(url: string): string[] {
         const segments: string[] = url.split('/');
 
