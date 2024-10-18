@@ -24,7 +24,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
     const flag = typeof searchParams.flag === 'string' ? Boolean(searchParams.flag) : undefined;
     const initalRender = useRef<boolean>(false);
 
-    if (flag !== undefined && initalRender.current) {
+    if (flag !== undefined && !initalRender.current) {
         if (flag) {
             toast({
                 title: "Your user was verified",
