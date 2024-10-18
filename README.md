@@ -1,8 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Expense Tracker App
 
-## Getting Started
+This is a [Next.js](https://nextjs.org) project.
 
-First, run the development server:
+## Local Intallation
+
+#### System requirements
+
+| Tecnology | Version  |
+| --------- | -------- |
+| Node      | ^18.17.1 |
+
+#### Enviroment
+
+This project uses a .env file, so create a `.env.local` in the root of the project and add the following structure:
+
+```bash
+NEXT_URI=uri_to_backend # eg. https://backend.com
+NEXT_URI_AUTH=uri_to_login_service # eg. http://backend.com/login
+
+NEXTAUTH_URL=url_to_the_frontend # Check NextAuth documentation
+NEXTAUTH_SECRET=secret # Secret used by NextAuth
+```
+
+#### Installation
+
+Let's run this as a local server. To archive the installation you must:
+
+1. Make sure you have install Node, if not install it
+2. Make sure you have install npm, yarn, pnpm or bun, if not install it
+3. Clone the repository
+4. Install the dependencies by running the command:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun install
+```
+
+5. Run the development server:
 
 ```bash
 npm run dev
@@ -14,23 +53,32 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+After the system is running, open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Web deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [https://expense-tracker-frontend-six-red.vercel.app](https://expense-tracker-frontend-six-red.vercel.app) in your browser to see the result on the web.
 
-## Learn More
+## External Libraries
 
-To learn more about Next.js, take a look at the following resources:
+This system used custom libraries to work, by default used Next.js basic configuration so it used Tailwind
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Shadcn
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Is use for styling and components, also in the documentation it offer some 'blocks' that can let you build up the system in less time.
 
-## Deploy on Vercel
+### DayJS
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+In this project is used to manage the day format and get the difference between dates
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### NextAuth
+
+Used to manage the authentication and authorization of the user by managin the access token
+
+### Zod
+
+It help in the client side form validation
+
+### Other libraries
+
+There are other libraries such @radix-ui, sonner, clsx, lucide-react, next-themes or recharts, those comes along with Shadcn for some components
