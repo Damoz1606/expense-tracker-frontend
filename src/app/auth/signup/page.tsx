@@ -33,8 +33,8 @@ const SignupPage = () => {
         try {
             await userCreate(data);
             toast({
-                title: "Your user is available!",
-                description: 'You can use your credentials now.',
+                title: "Left one step!",
+                description: 'Check your mail and verify you account.',
             });
             router.push('/auth/login');
         } catch (error: any) {

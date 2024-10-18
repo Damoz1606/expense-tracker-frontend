@@ -1,6 +1,12 @@
 import { ApiResource } from "../_base/api-resource.type";
 
 const endpoints = {
+    //#region Auth
+    validateCode: {
+        method: 'get',
+        resource: 'auth/code/:key'
+    } as ApiResource,
+    //#endregion
     //#region User
     userCreate: {
         method: 'post',

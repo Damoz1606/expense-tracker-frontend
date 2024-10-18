@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { useForm } from 'react-hook-form'
@@ -14,7 +14,37 @@ import { toast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 
-const LoginPage = () => {
+interface LoginPageProps {
+    searchParams: { [key: string]: string | string[] | undefined }
+}
+const LoginPage: React.FC<LoginPageProps> = ({
+    searchParams
+}) => {
+
+    const flag = typeof searchParams.flag === 'string' ? Boolean(searchParams.flag) : undefined;
+    const initalRender = useRef<boolean>(false);
+
+    if (flag !== undefined && initalRender.current) {
+        if (flag) {
+            toast({
+                title: "Your user was verified",
+                description: 'Now you can login to the app.',
+            });
+        } else {
+            toast({
+                title: "Token invalid",
+                description: 'The url used for email validation was not valid.',
+                variant: 'destructive'
+            });
+        }
+    }
+
+    useEffect(() => {
+        if (!initalRender.current) {
+            initalRender.current = true;
+        }
+    }, [])
+
 
     const [loading, setLoading] = useState<boolean>(false);
     const router = useRouter();
@@ -25,7 +55,7 @@ const LoginPage = () => {
             email: "",
             password: "",
         },
-    })
+    });
 
     const handleSubmit = async (data: { email: string; password: string; }) => {
         setLoading(true);
