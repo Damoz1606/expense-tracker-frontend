@@ -1,23 +1,32 @@
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { PiggyBank, NotepadText, Wallet, ListFilter, Search } from 'lucide-react'
+import { PiggyBank, NotepadText, Wallet } from 'lucide-react'
 import React from 'react'
 import BudgetChart from './_components/chart'
 import BudgetCard from '@/components/budget-card'
-import { Input } from '@/components/ui/input'
 import { expenseLastest } from '@/server/expense.actions'
 import ExpenseTable from '@/components/expense-table'
 import { retriveMe } from '@/server/user.actions'
 import { budgetRetriveActivity } from '@/server/budget.actions'
+import SearchInput from '@/components/search-input'
+import FilterInput from '@/components/filter-input'
 
-const HomePage = async () => {
+interface HomePageProps {
+    searchParams: { [key: string]: string | string[] | undefined }
+}
+const HomePage: React.FC<HomePageProps> = async ({
+    searchParams
+}) => {
+
+    const searchExpense = typeof searchParams.search === 'string' ? searchParams.search : undefined;
+    const filterExpense = typeof searchParams.filter === 'string' ? searchParams.filter : undefined;
 
     const user = await retriveMe();
 
     const budgetActivity = await budgetRetriveActivity();
 
-    const latestExpenses = await expenseLastest();
+    const currentExpenses = await expenseLastest();
+    const filteredExpenses = filterExpense ? currentExpenses.filter(e => e.budget === filterExpense) : currentExpenses;
+    const latestExpenses = searchExpense ? filteredExpenses.filter(e => e.name.includes(searchExpense)) : filteredExpenses;
 
     const totalBudget = budgetActivity.reduce((prev, curr) => prev + curr.budget, 0);
     const totalSpend = budgetActivity.reduce((prev, curr) => prev + curr.spend, 0);
@@ -101,38 +110,10 @@ const HomePage = async () => {
                 <div className='flex flex-col gap-y-2'>
                     <div className="flex item-center gap-x-1">
                         <div className="relative flex-1">
-                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input
-                                type="search"
-                                placeholder="Search..."
-                                className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-                            />
+                            <SearchInput value={searchExpense} />
                         </div>
                         <div className="ml-auto flex items-center gap-2">
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button
-                                        size="sm"
-                                        className="h-full gap-1 text-sm"
-                                    >
-                                        <ListFilter className="h-3.5 w-3.5" />
-                                        <span className="sr-only sm:not-sr-only">Filter</span>
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuCheckboxItem checked>
-                                        Fulfilled
-                                    </DropdownMenuCheckboxItem>
-                                    <DropdownMenuCheckboxItem>
-                                        Declined
-                                    </DropdownMenuCheckboxItem>
-                                    <DropdownMenuCheckboxItem>
-                                        Refunded
-                                    </DropdownMenuCheckboxItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+                            <FilterInput initial={filterExpense} values={latestExpenses.map(e => e.budget)} />
                         </div>
                     </div>
                     <Card>
