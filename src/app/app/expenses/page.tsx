@@ -1,19 +1,31 @@
 import ExpenseTable from '@/components/expense-table'
-import { Button } from '@/components/ui/button'
+import Pagination from '@/components/pagination';
+import SearchInput from '@/components/search-input';
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
-import { Pagination, PaginationContent, PaginationItem } from '@/components/ui/pagination'
-import { expenseRetrive } from '@/server/expense.actions'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { expensePageCount, expenseSearch } from '@/server/expense.actions'
 import React from 'react'
 
-const ExpensesPage = async () => {
+const take: number = 50;
+interface ExpensesPageProps {
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+const ExpensesPage: React.FC<ExpensesPageProps> = async ({
+  searchParams
+}) => {
 
-  const data = await expenseRetrive();
+  const searchExpense = typeof searchParams.search === 'string' ? searchParams.search : undefined;
+  const pageExpense = typeof searchParams.page === 'string' ? Number(searchParams.page) : 1;
+
+  const data = await expenseSearch({ skip: pageExpense - 1, take, filter: searchExpense });
+  const pages = await expensePageCount({ take, filter: searchExpense });
 
   return (
     <div className='relative'>
       <div className='mb-4 flex flex-col gap-y-1 md:gap-y-4'>
         <p className='text-3xl font-bold lg:text-[25px] xl:text-[30px]'>My expenses</p>
+      </div>
+      <div className='mb-4'>
+        <SearchInput />
       </div>
       <Card className='p-2'>
         <CardContent>
@@ -25,23 +37,7 @@ const ExpensesPage = async () => {
           />
         </CardContent>
         <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3">
-          <Pagination className="mx-auto w-auto">
-            <PaginationContent>
-              <PaginationItem>
-                <Button size="icon" variant="outline" className="h-6 w-6">
-                  <ChevronLeft className="h-3.5 w-3.5" />
-                  <span className="sr-only">Previous Order</span>
-                </Button>
-              </PaginationItem>
-              <span className='text-sm'>Page: 1</span>
-              <PaginationItem>
-                <Button size="icon" variant="outline" className="h-6 w-6">
-                  <ChevronRight className="h-3.5 w-3.5" />
-                  <span className="sr-only">Next Order</span>
-                </Button>
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <Pagination top={pages} page={pageExpense} />
         </CardFooter>
       </Card>
     </div>

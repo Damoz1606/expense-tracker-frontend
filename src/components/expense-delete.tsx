@@ -42,7 +42,7 @@ const ExpenseDelete: React.FC<ExpenseDeleteProps> = ({
                         variant='destructive'
                         onClick={handleClick}>
                         {loading
-                            ? <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ? <Loader2 className="h-5 w-5 animate-spin" />
                             : <Trash className='w-5 h-5' />}
                     </Button>
                 </TooltipTrigger>

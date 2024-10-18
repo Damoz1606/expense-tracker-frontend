@@ -2,7 +2,7 @@
 
 import expenseTracker from "@/lib/api-client/client/expense-tracker";
 import auth from "@/lib/auth/auth";
-import { ArrayResponse } from "@/lib/interfaces";
+import { ArrayResponse, CountQuery, PageCount, SearchQuery } from "@/lib/interfaces";
 import { revalidatePath } from "next/cache";
 
 export interface ExpenseRequest {
@@ -36,7 +36,7 @@ export const expenseCreate = async (body: ExpenseRequest): Promise<void> => {
  * Retrives all the expense object associated to the logged user
  * @returns {Array<Expense>} Array of expense objects
  */
-export const expenseRetrive = async () => {
+export const expenseRetrive = async (): Promise<Expense[]> => {
     const session = await auth();
     const { data }: ArrayResponse<Expense> = await expenseTracker()
         .addToken(session.token)
@@ -48,7 +48,7 @@ export const expenseRetrive = async () => {
  * Retrives the latest expense objects associated to the logged user
  * @returns {Array<Expense>} Array of expense objects
  */
-export const expenseLastest = async () => {
+export const expenseLastest = async (): Promise<Expense[]> => {
     const session = await auth();
     const { data }: ArrayResponse<Expense> = await expenseTracker()
         .addToken(session.token)
@@ -69,4 +69,35 @@ export const expenseDelete = async (id: number): Promise<void> => {
     revalidatePath(`/app/home`);
     revalidatePath(`/app/budgets/*`);
     revalidatePath(`/app/expenses`);
+}
+
+/**
+ * Search expenses by a given filter and paginate it
+ * @param query - Query values
+ * @returns Array expenses into a promise
+ */
+export const expenseSearch = async (query: SearchQuery): Promise<Expense[]> => {
+    console.log(query);
+    const session = await auth();
+    const { data }: ArrayResponse<Expense> = await expenseTracker()
+        .addToken(session.token)
+        .addParams({ key: 'expense' })
+        .addQuery({ ...query })
+        .execute('searchFilter');
+    return data;
+}
+
+/**
+ * 
+ * @param query - Query values
+ * @returns 
+ */
+export const expensePageCount = async (query: CountQuery): Promise<number> => {
+    const session = await auth();
+    const { pages }: PageCount = await expenseTracker()
+        .addToken(session.token)
+        .addParams({ key: 'expense' })
+        .addQuery({ ...query })
+        .execute('searchCount');
+    return pages;
 }

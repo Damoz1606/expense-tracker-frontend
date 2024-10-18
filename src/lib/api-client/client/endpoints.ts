@@ -55,6 +55,16 @@ const endpoints = {
         resource: 'expenses/:id'
     } as ApiResource,
     //#endregion
+    //#region Search
+    searchFilter: {
+        method: 'get',
+        resource: 'search/:key'
+    } as ApiResource,
+    searchCount: {
+        method: 'get',
+        resource: 'search/:key/pages'
+    } as ApiResource,
+    //#endregion
 }
 
 export default endpoints;

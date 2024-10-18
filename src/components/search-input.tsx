@@ -45,7 +45,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => setText(e.target.value);
 
     return (
-        <>
+        <div className='relative'>
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
                 onChange={handleChange}
@@ -53,7 +53,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
                 placeholder="Search..."
                 className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
             />
-        </>
+        </div>
     )
 }
 

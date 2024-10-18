@@ -113,7 +113,7 @@ const HomePage: React.FC<HomePageProps> = async ({
                             <SearchInput value={searchExpense} />
                         </div>
                         <div className="ml-auto flex items-center gap-2">
-                            <FilterInput initial={filterExpense} values={latestExpenses.map(e => e.budget)} />
+                            <FilterInput initial={filterExpense} values={Array.from(new Set(latestExpenses.map(e => e.budget)))} />
                         </div>
                     </div>
                     <Card>

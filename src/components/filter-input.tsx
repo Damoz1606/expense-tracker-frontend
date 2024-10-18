@@ -1,3 +1,5 @@
+'use client'
+
 import { ListFilter } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 import { Button } from './ui/button'

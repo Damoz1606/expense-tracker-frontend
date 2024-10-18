@@ -4,23 +4,25 @@ import { BudgetActivity, budgetRetrive } from '@/server/budget.actions'
 import React from 'react'
 import ExpenseForm from './_components/expense-form'
 import ExpenseTable from '@/components/expense-table'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Edit, ListFilter, Search } from 'lucide-react'
-import { Input } from '@/components/ui/input'
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Edit } from 'lucide-react'
 import Link from 'next/link'
 import BudgetDelete from './_components/budget-delete'
 import dayjs from 'dayjs'
+import SearchInput from '@/components/search-input'
 
 interface BudgetPageProps {
-  params: { id: number }
+  params: { id: number },
+  searchParams: { [key: string]: string | string[] | undefined }
 }
 const BudgetPage: React.FC<BudgetPageProps> = async ({
-  params
+  params,
+  searchParams
 }) => {
 
   const budget = await budgetRetrive(params.id);
+  const searchExpense = typeof searchParams.search === 'string' ? searchParams.search : undefined;
 
   const budgetActivity: BudgetActivity = {
     ...budget,
@@ -54,45 +56,21 @@ const BudgetPage: React.FC<BudgetPageProps> = async ({
       <div className='flex flex-col gap-y-2 mt-8'>
         <div className="flex item-center gap-x-1">
           <div className="relative flex-1">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search..."
-              className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-            />
-          </div>
-          <div className="ml-auto flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  size="sm"
-                  className="h-full gap-1 text-sm"
-                >
-                  <ListFilter className="h-3.5 w-3.5" />
-                  <span className="sr-only sm:not-sr-only">Filter</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuCheckboxItem checked>
-                  Fulfilled
-                </DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>
-                  Declined
-                </DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>
-                  Refunded
-                </DropdownMenuCheckboxItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <SearchInput value={searchExpense} />
           </div>
         </div>
 
         <Card className='p-2'>
           <CardContent>
             <ExpenseTable
-              data={budget.expenses.sort((a, b) => dayjs(b.createAt).diff(a.createAt)).map(e => ({ ...e, budget: budget.name }))}
+              data={(() => {
+                const expenses = budget.expenses;
+                const filteredExpenses = searchExpense ? expenses.filter(e =>
+                  e.name.includes(searchExpense) ||
+                  dayjs(e.createAt).format('YYYY-MM-DD').includes(searchExpense) ||
+                  e.amount.toString().includes(searchExpense)) : expenses;
+                return filteredExpenses.sort((a, b) => dayjs(b.createAt).diff(a.createAt)).map(e => ({ ...e, budget: budget.name }));
+              })()}
               showDate
               showAction
             />
