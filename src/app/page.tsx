@@ -1,4 +1,5 @@
 import { buttonVariants } from "@/components/ui/button";
+import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import clsx from "clsx";
 import Link from "next/link";
 
@@ -17,6 +18,24 @@ export default function Home() {
               className={clsx(buttonVariants({ size: 'lg' }), 'mx-auto')}>
               Get Started
             </Link>
+          </div>
+          <div className="max-w-full w-fit mx-auto mt-8">
+            <div className="flex flex-row gap-x-8">
+              <Link
+                href='https://github.com/Damoz1606/expense-tracker-frontend'
+                target="_blank"
+                className={clsx(buttonVariants({ variant: 'ghost' }))}>
+                <GitHubLogoIcon className="w-5 h-5" />
+                Frontend
+              </Link>
+              <Link
+                href='https://github.com/Damoz1606/expense-tracker-backend'
+                target="_blank"
+                className={clsx(buttonVariants({ variant: 'ghost' }))}>
+                <GitHubLogoIcon className="w-5 h-5" />
+                Backend
+              </Link>
+            </div>
           </div>
         </div>
       </div>
