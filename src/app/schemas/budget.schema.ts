@@ -1,9 +1,13 @@
 import { z } from "zod";
 
 export default z.object({
-    name: z.string().min(1),
+    name: z.string().min(1, {
+        message: 'Name cannot be empty'
+    }).max(64, {
+        message: 'Name must have less than 64 characters'
+    }),
     budget: z.coerce.number().gt(0, {
-        message: 'The expense must be higher than 0'
+        message: 'Budget must be higher than 0'
     }).refine(n => {
         return !n.toString().split('.')[1] || n.toString().split('.')[1].length <= 2;
     }, {
